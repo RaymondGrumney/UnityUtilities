@@ -19,5 +19,8 @@ namespace CommonAssets.Joypads.Presets
         KeyCode JoypadPreset.rightKey { get => Easily.Parse<KeyCode>("7thAxis"); }
         string JoypadPreset.horizontalAxis { get => "6thAxis"; }
         string JoypadPreset.verticalAxis { get => "7thAxis"; }
+        KeyCode JoypadPreset.menuConfirmKey { get => Easily.Parse<KeyCode>("Button0"); }
+        KeyCode JoypadPreset.menuCancelKey { get => Easily.Parse<KeyCode>("Button7"); }
+        KeyCode JoypadPreset.menuExitKey { get => Easily.Parse<KeyCode>("Button7"); }
     }
 }
