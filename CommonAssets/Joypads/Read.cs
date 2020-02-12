@@ -1,22 +1,37 @@
 // based on: https://www.studica.com/blog/custom-input-manager-unity-tutorial
 
+using CommonAssets.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Joypad
 {
     /// <summary>
     /// Provides access to buttons as configured in Player Prefs
     /// </summary>
-    public class Read
+    public class Read : MonoBehaviour
     {
         // TODO: custom naming via an array. not all games will have jump, attack, magic, etc. as standard actions
 
         public static Read Buttons;
 
-        public double deadzone { get; set; } = 0.1;
+        public float deadzone { get; set; } = 0.1f;
 
+        void Awake()
+        {
+            //Singleton pattern
+            if (Buttons == null)
+            {
+                DontDestroyOnLoad(gameObject);
+                Buttons = this;
+            }
+            else if (Buttons != this)
+            {
+                Destroy(gameObject);
+            }
+        }
 
         /// <summary>
         /// If the button / axis is currently being held
@@ -25,7 +40,7 @@ namespace Joypad
         /// <returns></returns>
         public bool Held(string action)
         {
-            return AxesInput(action) ?? UnityEngine.Input.GetKey(Input.Buttons.Map[action]);
+            return AxesInput(action) ?? UnityEngine.Input.GetKey(Easily.Parse<KeyCode>(Input.Buttons.Map[action]));
         }
 
         /// <summary>
@@ -35,7 +50,7 @@ namespace Joypad
         /// <returns></returns>
         public bool Pressed(string action)
         {
-            return AxesInput(action) ?? UnityEngine.Input.GetKeyDown(Input.Buttons.Map[action]);
+            return AxesInput(action) ?? UnityEngine.Input.GetKeyDown(Easily.Parse<KeyCode>(Input.Buttons.Map[action]));
         }
 
         /// <summary>
@@ -45,7 +60,7 @@ namespace Joypad
         /// <returns></returns>
         public bool Released(string action)
         {
-            return AxesInput(action) ?? UnityEngine.Input.GetKeyUp(Input.Buttons.Map[action]);
+            return AxesInput(action) ?? UnityEngine.Input.GetKeyUp(Easily.Parse<KeyCode>(Input.Buttons.Map[action]));
         }
 
         /// <summary>
@@ -56,7 +71,7 @@ namespace Joypad
         public bool? AxesInput(string action)
         {
             // TODO: Handle Axises better. Store which is negative
-            if (Input.Buttons.Map[action] == ("vertical"))
+            if (Input.Buttons.Map[action].ToString().ToLower() == ("vertical"))
             {
                 if (action == "up")
                 {
@@ -71,7 +86,7 @@ namespace Joypad
                     return UnityEngine.Input.GetAxis("vertical") > deadzone;
                 }
             }
-            else if (Input.Buttons.Map[action] == "horizontal")
+            else if (Input.Buttons.Map[action].ToString().ToLower() == "horizontal")
             {
                 if (action == "right")
                 {
@@ -86,7 +101,7 @@ namespace Joypad
                     return UnityEngine.Input.GetAxis("horizontal") > deadzone;
                 }
             }
-            else if (Input.Buttons.Map[action].ToLower().Contains("axis"))
+            else if (Input.Buttons.Map[action].ToString().ToLower().Contains("axis"))
             {
                 if (action == "left" || action == "down")
                 {
@@ -103,39 +118,10 @@ namespace Joypad
             }
         }
 
-        public bool jump => 
-            UnityEngine.Input.GetKey(Joypad.Input.Buttons.jump);
-        public bool attack => 
-            UnityEngine.Input.GetKey(Joypad.Input.Buttons.attack);
-        public bool magic => 
-            UnityEngine.Input.GetKey(Joypad.Input.Buttons.magic);
-        public bool item => 
-            UnityEngine.Input.GetKey(Joypad.Input.Buttons.item);
-        public bool menu =>
-            UnityEngine.Input.GetKey(Joypad.Input.Buttons.menu);
-        public bool menuConfirm =>
-            UnityEngine.Input.GetKey(Joypad.Input.Buttons.menuConfirm);
-        public bool menuCancel =>
-            UnityEngine.Input.GetKey(Joypad.Input.Buttons.menuCancel);
-        public bool menuExit =>
-            UnityEngine.Input.GetKey(Joypad.Input.Buttons.menuExit);
-        public bool up =>
-            !down // down overrides up
-            && ( UnityEngine.Input.GetKey(Joypad.Input.Buttons.up) 
-            || horizontal > deadzone );
-        public bool down => 
-            UnityEngine.Input.GetKey(Joypad.Input.Buttons.down)
-            || horizontal < -deadzone;
-        public bool right =>
-            UnityEngine.Input.GetKey(Joypad.Input.Buttons.right)
-            || vertical > deadzone;
-        public bool left => 
-            !right // right overrides left
-            && ( UnityEngine.Input.GetKey(Joypad.Input.Buttons.left)
-            || vertical < -deadzone );
-
-        public float horizontal => UnityEngine.Input.GetAxis(Joypad.Input.Buttons.horizontal);
-        public float vertical => UnityEngine.Input.GetAxis(Joypad.Input.Buttons.vertical);
+        public float horizontal => Held("right") ? 1f : Held("left") ? -1 : 0;
+        //public float horizontal => UnityEngine.Input.GetAxis(Joypad.Input.Buttons.horizontal);
+        public float vertical => Held("up") ? 1f : Held( "down" ) ? -1 : 0;
+        //public float vertical => UnityEngine.Input.GetAxis(Joypad.Input.Buttons.vertical);
     }
 
 }
