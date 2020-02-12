@@ -1,31 +1,77 @@
 // based on: https://www.studica.com/blog/custom-input-manager-unity-tutorial
 
+using CommonAssets.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Joypad
 {
     /// <summary>
     /// Provides access to buttons as configured in Player Prefs
     /// </summary>
-    public class Read
+    public class Read : MonoBehaviour
     {
         // TODO: custom naming via an array. not all games will have jump, attack, magic, etc. as standard actions
 
         public static Read Buttons;
 
-        public double deadzone { get; set; } = 0.1;
+        public float deadzone { get; set; } = 0.1f;
+
+        void Awake()
+        {
+            //Singleton pattern
+            if (Buttons == null)
+            {
+                DontDestroyOnLoad(gameObject);
+                Buttons = this;
+            }
+            else if (Buttons != this)
+            {
+                Destroy(gameObject);
+            }
+        }
 
         /// <summary>
-        /// Maps action names to joypad/keyboard inputs
+        /// If the button / axis is currently being held
         /// </summary>
-        ButtonMap Map { get; } = new ButtonMap();
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public bool Held(string action)
+        {
+            return AxesInput(action) ?? UnityEngine.Input.GetKey(Easily.Parse<KeyCode>(Input.Buttons.Map[action]));
+        }
 
-        public bool Input(string action)
+        /// <summary>
+        /// If the button was pressed this frame. For Axes, will return if the direction is currently being pressed.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public bool Pressed(string action)
+        {
+            return AxesInput(action) ?? UnityEngine.Input.GetKeyDown(Easily.Parse<KeyCode>(Input.Buttons.Map[action]));
+        }
+
+        /// <summary>
+        /// if the button was released this frame. For Axes, will return if the direction is currently being pressed.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public bool Released(string action)
+        {
+            return AxesInput(action) ?? UnityEngine.Input.GetKeyUp(Easily.Parse<KeyCode>(Input.Buttons.Map[action]));
+        }
+
+        /// <summary>
+        /// Returns true or false if getting input from an Axis, or null if it isn't one of those
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public bool? AxesInput(string action)
         {
             // TODO: Handle Axises better. Store which is negative
-            if (Map[action] == ("vertical"))
+            if (Input.Buttons.Map[action].ToString().ToLower() == ("vertical"))
             {
                 if (action == "up")
                 {
@@ -40,7 +86,7 @@ namespace Joypad
                     return UnityEngine.Input.GetAxis("vertical") > deadzone;
                 }
             }
-            else if (Map[action] == "horizontal")
+            else if (Input.Buttons.Map[action].ToString().ToLower() == "horizontal")
             {
                 if (action == "right")
                 {
@@ -55,136 +101,27 @@ namespace Joypad
                     return UnityEngine.Input.GetAxis("horizontal") > deadzone;
                 }
             }
-            else if (Map[action].ToLower().Contains("axis"))
+            else if (Input.Buttons.Map[action].ToString().ToLower().Contains("axis"))
             {
-                if ( action == "left"  || action == "down" )
+                if (action == "left" || action == "down")
                 {
-                    return UnityEngine.Input.GetAxis(Map[action]) < -deadzone;
+                    return UnityEngine.Input.GetAxis(Input.Buttons.Map[action]) < -deadzone;
                 }
                 else // default to positive
                 {
-                    return UnityEngine.Input.GetAxis(Map[action]) > deadzone;
+                    return UnityEngine.Input.GetAxis(Input.Buttons.Map[action]) > deadzone;
                 }
             }
             else
             {
-                return UnityEngine.Input.GetKey(Map[action]);
+                return null;
             }
         }
 
-        public bool jump => 
-            UnityEngine.Input.GetKey(Joypad.Input.Button.jump);
-        public bool attack => 
-            UnityEngine.Input.GetKey(Joypad.Input.Button.attack);
-        public bool magic => 
-            UnityEngine.Input.GetKey(Joypad.Input.Button.magic);
-        public bool item => 
-            UnityEngine.Input.GetKey(Joypad.Input.Button.item);
-        public bool menu => 
-            UnityEngine.Input.GetKey(Joypad.Input.Button.menu);
-        public bool up =>
-            !down // down overrides up
-            && ( UnityEngine.Input.GetKey(Joypad.Input.Button.up) 
-            || horizontal > deadzone );
-        public bool down => 
-            UnityEngine.Input.GetKey(Joypad.Input.Button.down)
-            || horizontal < -deadzone;
-        public bool right =>
-            UnityEngine.Input.GetKey(Joypad.Input.Button.right)
-            || vertical > deadzone;
-        public bool left => 
-            !right // right overrides left
-            && ( UnityEngine.Input.GetKey(Joypad.Input.Button.left)
-            || vertical < -deadzone );
-
-        public double horizontal => UnityEngine.Input.GetAxis(Joypad.Input.Button.horizontal);
-        public double vertical => UnityEngine.Input.GetAxis(Joypad.Input.Button.vertical);
+        public float horizontal => Held("right") ? 1f : Held("left") ? -1 : 0;
+        //public float horizontal => UnityEngine.Input.GetAxis(Joypad.Input.Buttons.horizontal);
+        public float vertical => Held("up") ? 1f : Held( "down" ) ? -1 : 0;
+        //public float vertical => UnityEngine.Input.GetAxis(Joypad.Input.Buttons.vertical);
     }
 
-    class ButtonMap : IDictionary<string, string>
-    {
-        private List<Tuple<string, string>> Opposites = new List<Tuple<string, string>>()
-        {
-            new Tuple<string, string>("up", "down"),
-            new Tuple<string, string>("left", "right")
-        };
-
-        private List<string> CaresAboutOpposites = new List<string>()
-        {
-            "horizontal",
-            "vertical"
-        };
-
-        private Dictionary<string, string> Map;
-
-        public string this[string key] { 
-            get => Map[key];
-            set
-            {
-                if( CaresAboutOpposites.Contains(value) )
-                {
-                    bool set = false;
-
-                    foreach (Tuple<string, string> turtle in Opposites)
-                    {
-                        if (turtle.Item1 == key || turtle.Item2 == key)
-                        {
-                            Map[turtle.Item1] = value;
-                            Map[turtle.Item2] = value;
-                            set = true;
-                        }
-                    }
-
-                    if (!set)
-                    {
-                        Map[key] = value;
-                    }
-                }
-                else
-                {
-                    Map[key] = value;
-                }
-            }
-        }
-
-        public ICollection<string> Keys { get => Map.Keys; }
-        public ICollection<string> Values { get => Map.Values; }
-        public int Count { get => Map.Count; }
-        public bool IsReadOnly { get => false; }
-
-        public void Add(string key, string value)
-            => Map.Add(key, value);
-
-        public void Add(KeyValuePair<string, string> item)
-            => Map.Add(item.Key, item.Value);
-
-        public void Clear()
-            => Map.Clear();
-
-        public bool Contains(KeyValuePair<string, string> item)
-            => Map.ContainsKey(item.Key) && Map[item.Key].Equals(item.Value);
-
-        public bool ContainsKey(string key)
-            => Map.ContainsKey(key);
-
-        public void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
-            => Map.GetEnumerator();
-
-        public bool Remove(string key)
-            => Map.Remove(key);
-
-        public bool Remove(KeyValuePair<string, string> item)
-            => Map.ContainsKey(item.Key) && Map[item.Key].Equals(item.Value) && Map.Remove(item.Key);
-
-        public bool TryGetValue(string key, out string value)
-           => Map.TryGetValue(key, out value);
-
-        IEnumerator IEnumerable.GetEnumerator()
-            => Map.GetEnumerator();
-    }
 }

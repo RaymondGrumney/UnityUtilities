@@ -9,6 +9,9 @@ namespace CommonAssets.Joypads.Presets
         KeyCode magicKey { get; }
         KeyCode itemKey { get; }
         KeyCode menuKey { get; }
+        KeyCode menuConfirmKey { get; }
+        KeyCode menuCancelKey { get; }
+        KeyCode menuExitKey { get; }
         KeyCode upKey { get; }
         KeyCode downKey { get; }
         KeyCode leftKey { get; }

@@ -4,41 +4,37 @@ using UnityEngine;
 using System.Collections;
 using CommonAssets.Joypads.Presets;
 using CommonAssets.Utilities;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Diagnostics;
 
-namespace Joypad {
-
+namespace Joypad
+{
     /// <summary>
     /// For defining button maps. Access via Input.Buttons
     /// </summary>
-    public class Input : MonoBehaviour {
+    public class Input : MonoBehaviour
+    {
         /// <summary>
         /// Access the butons
         /// </summary>
-        public static Input Button;
+        public static Input Buttons;
 
-        #region
-        virtual public KeyCode jump { get; set; }
-        virtual public KeyCode attack { get; set; }
-        virtual public KeyCode magic { get; set; }
-        virtual public KeyCode item { get; set; }
-        virtual public KeyCode menu { get; set; }
-        virtual public KeyCode up { get; set; }
-        virtual public KeyCode down { get; set; }
-        virtual public string horizontal { get; set; }
-        virtual public KeyCode left { get; set; }
-        virtual public KeyCode right { get; set; }
-        virtual public string  vertical { get; set; }
-
+        /// <summary>
+        /// Maps action names to joypad/keyboard inputs
+        /// </summary>
+        public ButtonMap Map = new ButtonMap();
 
         void Awake()
         {
             //Singleton pattern
-            if (Button == null)
+            if (Buttons == null)
             {
                 DontDestroyOnLoad(gameObject);
-                Button = this;
+                Buttons = this;
             }
-            else if (Button != this)
+            else if (Buttons != this)
             {
                 Destroy(gameObject);
             }
@@ -49,17 +45,23 @@ namespace Joypad {
         /// <summary>
         /// Sets each key to the player prefs or default
         /// </summary>
-        public void Set() 
-        { 
-            jump = Easily.Get<KeyCode>().From.PlayerPrefs("jumpKey").OrDefault(KeyCode.Space);
-            attack = Easily.Get<KeyCode>().From.PlayerPrefs("attackKey").OrDefault(KeyCode.KeypadEnter);
-            magic = Easily.Get<KeyCode>().From.PlayerPrefs("magicKey").OrDefault(KeyCode.M);
-            item = Easily.Get<KeyCode>().From.PlayerPrefs("itemKey").OrDefault(KeyCode.RightShift);
-            menu = Easily.Get<KeyCode>().From.PlayerPrefs("menuKey").OrDefault(KeyCode.Escape);
-            up = Easily.Get<KeyCode>().From.PlayerPrefs("upKey").OrDefault(KeyCode.W);
-            down = Easily.Get<KeyCode>().From.PlayerPrefs("downKey").OrDefault(KeyCode.S);
-            left = Easily.Get<KeyCode>().From.PlayerPrefs("leftKey").OrDefault(KeyCode.A);
-            right = Easily.Get<KeyCode>().From.PlayerPrefs("rightKey").OrDefault(KeyCode.D);
+        public void Set()
+        {
+            Map = new ButtonMap
+            {
+                { "jump", KeyCode.Space.ToString() },
+                { "attack", KeyCode.KeypadEnter.ToString() },
+                { "magic", KeyCode.M.ToString() },
+                { "item", KeyCode.RightShift.ToString() },
+                { "menu", KeyCode.Escape.ToString() },
+                { "menuConfirm", KeyCode.Space.ToString() },
+                { "menuCancel", KeyCode.Backspace.ToString() },
+                { "menuExit", KeyCode.Escape.ToString() },
+                { "up", KeyCode.W.ToString() },
+                { "down", KeyCode.S.ToString() },
+                { "left", KeyCode.A.ToString() },
+                { "right", KeyCode.D.ToString() }
+            };
         }
 
         /// <summary>
@@ -68,16 +70,141 @@ namespace Joypad {
         /// <param name="preset"></param>
         public void Set(JoypadPreset preset)
         {
-            jump = Easily.Get<KeyCode>().From.PlayerPrefs("jumpKey").OrDefault(preset.jumpKey);
-            attack = Easily.Get<KeyCode>().From.PlayerPrefs("attackKey").OrDefault(preset.attackKey);
-            magic = Easily.Get<KeyCode>().From.PlayerPrefs("magicKey").OrDefault(preset.magicKey);
-            item = Easily.Get<KeyCode>().From.PlayerPrefs("itemKey").OrDefault(preset.itemKey);
-            menu = Easily.Get<KeyCode>().From.PlayerPrefs("menuKey").OrDefault(preset.menuKey);
-            up = Easily.Get<KeyCode>().From.PlayerPrefs("upKey").OrDefault(preset.upKey);
-            down = Easily.Get<KeyCode>().From.PlayerPrefs("downKey").OrDefault(preset.downKey);
-            left = Easily.Get<KeyCode>().From.PlayerPrefs("leftKey").OrDefault(preset.leftKey);
-            right = Easily.Get<KeyCode>().From.PlayerPrefs("rightKey").OrDefault(preset.rightKey);
+            Map = new ButtonMap
+            {
+                { "jump", preset.jumpKey.ToString() },
+                { "attack", preset.attackKey.ToString() },
+                { "magic", preset.magicKey.ToString() },
+                { "item", preset.itemKey.ToString() },
+                { "menu", preset.menuKey.ToString() },
+                { "menuConfirm", preset.menuConfirmKey.ToString() },
+                { "menuCancel", preset.menuCancelKey.ToString() },
+                { "menuExit", preset.menuExitKey.ToString() },
+                { "up", preset.upKey.ToString() },
+                { "down", preset.downKey.ToString() },
+                { "left", preset.leftKey.ToString() },
+                { "right", preset.rightKey.ToString() }
+            };
         }
     }
 
+    [Serializable]
+    public class Twople
+    {
+        public string Key;
+        public string Value;
+
+        public Twople() { }
+
+        public Twople(string key, string value)
+        {
+            Key = key;
+            Value = value;
+        }
+
+        // override object.Equals
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            return ((Twople)obj).Key == this.Key;
+        }
+
+        // override object.GetHashCode
+        public override int GetHashCode()
+        {
+            // TODO: write your implementation of GetHashCode() here
+            throw new NotImplementedException();
+            return base.GetHashCode();
+        }
+    }
+
+    [Serializable]
+    public class ButtonMap : IEnumerable
+    {
+        private List<Tuple<string, string>> Opposites = new List<Tuple<string, string>>()
+        {
+            new Tuple<string, string>("up", "down"),
+            new Tuple<string, string>("left", "right")
+        };
+
+        private List<string> CaresAboutOpposites = new List<string>()
+        {
+            "horizontal",
+            "vertical"
+        };
+
+        [SerializeField] public List<Twople> Map;
+
+        public ButtonMap()
+        {
+            Map = new List<Twople>();
+        }
+
+        public string this[string key]
+        {
+            get
+            {
+                foreach(Twople candidate in Map)
+                {
+                    if(candidate.Key == key)
+                    {
+                        return candidate.Value;
+                    }
+                }
+
+                return null;
+            }
+            set
+            {
+                bool set = false;
+
+                if (CaresAboutOpposites.Contains(key))
+                {
+                    foreach (Tuple<string, string> turtle in Opposites)
+                    {
+                        if (turtle.Item1 == key || turtle.Item2 == key)
+                        {
+                            if (Map.Contains(new Twople(turtle.Item1, value))) // Twople.equals checks key, not value
+                            {
+                                Map.Find(x => x.Key == turtle.Item1).Value = value;
+                                set = true;
+                            }
+
+                            if (Map.Contains(new Twople(turtle.Item2, value))) // Twople.equals checks key, not value
+                            {
+                                Map.Find(x => x.Key == turtle.Item2).Value = value;
+                                set = true;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (!set && Map.Contains(new Twople(key, value))) // Twople.equals checks key, not value
+                    {
+                        Map.Find(x => x.Key == key).Value = value;
+                    }
+                }
+            }
+        }
+
+
+        public void Add(string key, string value)
+        {
+            Twople candidate = new Twople(key, value);
+
+            if (!Map.Contains(candidate)) {
+                Map.Add(candidate);
+            }
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return ((IEnumerable)Map).GetEnumerator();
+        }
+    }
 }
