@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace CommonAssets
 {
-    class KnockBack
+    public class KnockBack
     {
         private Rigidbody2D rigidbody;
         private Vector2 knockBack;
