@@ -3,11 +3,11 @@ using UnityEngine;
 
 internal class Instantiator
 {
-    internal static void Make(GameObject spawnOnImpact, Vector3 center)
+    internal static void Make(GameObject gameObject, Vector3 here)
     {
-        if (spawnOnImpact != null)
+        if (gameObject != null)
         {
-            GameObject.Instantiate(spawnOnImpact, center, Quaternion.identity);
+            GameObject.Instantiate(gameObject, here, Quaternion.identity);
         }
     }
 }

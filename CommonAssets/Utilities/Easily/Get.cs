@@ -8,7 +8,7 @@ namespace CommonAssets.Utilities
     public class Get<T>
     {
         /// <summary>
-        /// The Result (use if you don't care about the 
+        /// The Result 
         /// </summary>
         public T Please { get; private set; }
 
