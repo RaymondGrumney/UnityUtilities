@@ -21,6 +21,9 @@ namespace Joypad
         /// </summary>
         public static Input Buttons;
 
+        public float Deadzone = 0.1f;
+
+
         /// <summary>
         /// Maps action names to joypad/keyboard inputs
         /// </summary>
@@ -50,7 +53,7 @@ namespace Joypad
             Map = new ButtonMap
             {
                 { "jump", KeyCode.Space.ToString() },
-                { "attack", KeyCode.KeypadEnter.ToString() },
+                { "attack", KeyCode.Return.ToString() },
                 { "magic", KeyCode.M.ToString() },
                 { "item", KeyCode.RightShift.ToString() },
                 { "menu", KeyCode.Escape.ToString() },
@@ -125,17 +128,22 @@ namespace Joypad
     [Serializable]
     public class ButtonMap : IEnumerable
     {
-        private List<Tuple<string, string>> Opposites = new List<Tuple<string, string>>()
+        private readonly List<Tuple<string, string>> Opposites = new List<Tuple<string, string>>()
         {
             new Tuple<string, string>("up", "down"),
             new Tuple<string, string>("left", "right")
         };
 
-        private List<string> CaresAboutOpposites = new List<string>()
+        private readonly List<string> CaresAboutOpposites = new List<string>()
         {
             "horizontal",
-            "vertical"
+            "vertical",
+            "6thAxis",
+            "7thAxis",
+            "YAxis",
+            "XAxis"
         };
+        
 
         [SerializeField] public List<Twople> Map;
 

@@ -8,16 +8,58 @@ using UnityEngine;
 
 namespace Joypad
 {
+    [Serializable]
+    public class Boolple : MonoBehaviour
+    {
+        [SerializeField] public string Input;
+        [SerializeField] public bool State;
+
+        public Boolple() { }
+
+        public Boolple(string key)
+        {
+            Input = key;
+            State = false;
+        }
+
+        // override object.Equals
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            return ((Boolple)obj).Input == this.Input;
+        }
+
+        public void Update()
+        {
+            State = Joypad.Read.Buttons.Held(Input); 
+        }
+
+        // override object.GetHashCode
+        public override int GetHashCode()
+        {
+            // TODO: write your implementation of GetHashCode() here
+            throw new NotImplementedException();
+            return base.GetHashCode();
+        }
+    }
+
     /// <summary>
     /// Provides access to buttons as configured in Player Prefs
     /// </summary>
     public class Read : MonoBehaviour
     {
-        // TODO: custom naming via an array. not all games will have jump, attack, magic, etc. as standard actions
-
         public static Read Buttons;
 
-        public float deadzone { get; set; } = 0.1f;
+        // TODO: Make button states visible
+        // [SerializeField] public List<Boolple> ButtonStates;
+
+        public Read()
+        {
+        }
 
         void Awake()
         {
@@ -31,6 +73,17 @@ namespace Joypad
             {
                 Destroy(gameObject);
             }
+
+            // ButtonStates = new List<Boolple>();
+
+            //foreach (Twople button in Joypad.Input.Buttons.Map.Map)
+            //{
+            //    ButtonStates.Add(new Boolple(button.Key));
+            //}
+        }
+        void OnGUI()
+        {
+            GUILayout.Label("Test");
         }
 
         /// <summary>
@@ -75,41 +128,41 @@ namespace Joypad
             {
                 if (action == "up")
                 {
-                    return UnityEngine.Input.GetAxis("vertical") > deadzone;
+                    return UnityEngine.Input.GetAxis("vertical") > Joypad.Input.Buttons.Deadzone;
                 }
                 else if (action == "down")
                 {
-                    return UnityEngine.Input.GetAxis("vertical") < -deadzone;
+                    return UnityEngine.Input.GetAxis("vertical") < -Joypad.Input.Buttons.Deadzone;
                 }
                 else // default to positive
                 {
-                    return UnityEngine.Input.GetAxis("vertical") > deadzone;
+                    return UnityEngine.Input.GetAxis("vertical") > Joypad.Input.Buttons.Deadzone;
                 }
             }
             else if (Input.Buttons.Map[action].ToString().ToLower() == "horizontal")
             {
                 if (action == "right")
                 {
-                    return UnityEngine.Input.GetAxis("horizontal") > deadzone;
+                    return UnityEngine.Input.GetAxis("horizontal") > Joypad.Input.Buttons.Deadzone;
                 }
                 else if (action == "left")
                 {
-                    return UnityEngine.Input.GetAxis("horizontal") < -deadzone;
+                    return UnityEngine.Input.GetAxis("horizontal") < -Joypad.Input.Buttons.Deadzone;
                 }
                 else
                 {
-                    return UnityEngine.Input.GetAxis("horizontal") > deadzone;
+                    return UnityEngine.Input.GetAxis("horizontal") > Joypad.Input.Buttons.Deadzone;
                 }
             }
             else if (Input.Buttons.Map[action].ToString().ToLower().Contains("axis"))
             {
                 if (action == "left" || action == "down")
                 {
-                    return UnityEngine.Input.GetAxis(Input.Buttons.Map[action]) < -deadzone;
+                    return UnityEngine.Input.GetAxis(Input.Buttons.Map[action]) < -Joypad.Input.Buttons.Deadzone;
                 }
                 else // default to positive
                 {
-                    return UnityEngine.Input.GetAxis(Input.Buttons.Map[action]) > deadzone;
+                    return UnityEngine.Input.GetAxis(Input.Buttons.Map[action]) > Joypad.Input.Buttons.Deadzone;
                 }
             }
             else
