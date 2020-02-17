@@ -93,7 +93,7 @@ namespace CommonAssets.Utilities
 		/// <returns></returns>
 		public Exploder At(Vector3 position)
 		{
-			_worldPosition = position;
+			_worldPosition = Easily.Clone( position );
 			return this;
 		}
 
