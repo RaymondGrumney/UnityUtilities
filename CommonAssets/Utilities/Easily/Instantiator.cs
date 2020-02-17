@@ -9,9 +9,7 @@ internal class Instantiator
         {
             return UnityEngine.Object.Instantiate(gameObject, here, Quaternion.identity);
         }
-        else
-        {
-            throw new ArgumentNullException("gameObject cannot be Null.");
-        }
+
+        return null;
     }
 }
