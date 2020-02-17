@@ -28,7 +28,7 @@ namespace CommonAssets.Utilities
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="here">Where in the game to instantiate it.</param>
-        public static void Instantiate(GameObject gameObject, Vector3 here) => Instantiator.Make(gameObject, here);
+        public static GameObject Instantiate(GameObject gameObject, Vector3 here) => Instantiator.Make(gameObject, here);
         
 
 
@@ -49,26 +49,30 @@ namespace CommonAssets.Utilities
         /// <summary>
         /// Knocks an object back
         /// </summary>
-        /// <param name="this"></param>
+        /// <param name="gameObject"></param>
         /// <returns></returns>
-        public static KnockBack Knock(GameObject @this) => new KnockBack(@this);
+        public static KnockBack Knock(GameObject gameObject) => new KnockBack(gameObject);
         /// <summary>
         /// Knocks an object back
         /// </summary>
-        /// <param name="this"></param>
+        /// <param name="collision"></param>
         /// <returns></returns>
-        public static KnockBack Knock(Collision2D @this) => new KnockBack(@this);
+        public static KnockBack Knock(Collision2D collision) => new KnockBack(collision);
         /// <summary>
         /// Knocks an object back
         /// </summary>
-        /// <param name="this"></param>
+        /// <param name="collider"></param>
         /// <returns></returns>
-        public static KnockBack Knock(Collider2D @this) => new KnockBack(@this);
+        public static KnockBack Knock(Collider2D collider) => new KnockBack(collider);
         /// <summary>
         /// Knocks an object back
         /// </summary>
-        /// <param name="this"></param>
+        /// <param name="rigidBody"></param>
         /// <returns></returns>
-        public static KnockBack Knock(Rigidbody2D @this) => new KnockBack(@this);
+        public static KnockBack Knock(Rigidbody2D rigidBody) => new KnockBack(rigidBody);
+
+        public static Flip Flip(GameObject gameObject) => new Flip(gameObject);
+
+        public static Vector3 Clone(Vector3 original) => new Vector3(original.x, original.y, original.z);
     }
 }
