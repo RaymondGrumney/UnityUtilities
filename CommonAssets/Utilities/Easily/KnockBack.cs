@@ -66,11 +66,14 @@ namespace CommonAssets
 
         private void _knockback()
         {
-            Vector2 them = rigidbody.gameObject.transform.position;
-            float diff = Mathf.Sign(relativeTo.x - them.x);
+            if (rigidbody != null)
+            {
+                Vector2 them = rigidbody.gameObject.transform.position;
+                float diff = Mathf.Sign(relativeTo.x - them.x);
 
-            Vector2 theirvelocity = rigidbody.velocity;
-            rigidbody.velocity = new Vector2(-knockBack.x * diff, theirvelocity.y + knockBack.y);
+                Vector2 theirvelocity = rigidbody.velocity;
+                rigidbody.velocity = new Vector2(-knockBack.x * diff, theirvelocity.y + knockBack.y);
+            }
         }
     }
 }
