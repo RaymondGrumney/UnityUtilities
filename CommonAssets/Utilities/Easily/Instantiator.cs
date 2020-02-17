@@ -3,11 +3,15 @@ using UnityEngine;
 
 internal class Instantiator
 {
-    internal static void Make(GameObject gameObject, Vector3 here)
+    internal static GameObject Make(GameObject gameObject, Vector3 here)
     {
         if (gameObject != null)
         {
-            GameObject.Instantiate(gameObject, here, Quaternion.identity);
+            return UnityEngine.Object.Instantiate(gameObject, here, Quaternion.identity);
+        }
+        else
+        {
+            throw new ArgumentNullException("gameObject cannot be Null.");
         }
     }
 }
