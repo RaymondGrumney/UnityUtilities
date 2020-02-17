@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -71,8 +72,12 @@ namespace CommonAssets.Utilities
         /// <returns></returns>
         public static KnockBack Knock(Rigidbody2D rigidBody) => new KnockBack(rigidBody);
 
+        public static void StartCoroutine(IEnumerator coroutine)
+            => CoroutineRunner.RunCoroutine(coroutine);
+
         public static Flip Flip(GameObject gameObject) => new Flip(gameObject);
 
         public static Vector3 Clone(Vector3 original) => new Vector3(original.x, original.y, original.z);
+
     }
 }
