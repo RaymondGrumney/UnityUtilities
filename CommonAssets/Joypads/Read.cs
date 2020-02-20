@@ -81,10 +81,6 @@ namespace Joypad
             //    ButtonStates.Add(new Boolple(button.Key));
             //}
         }
-        void OnGUI()
-        {
-            GUILayout.Label("Test");
-        }
 
         /// <summary>
         /// If the button / axis is currently being held
