@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CommonAssets.Utilities;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,9 +11,10 @@ namespace CommonAssets
 {
     public class KnockBack
     {
-        private Rigidbody2D rigidbody;
-        private Vector2 knockBack;
-        private Vector2 relativeTo;
+        private Rigidbody2D _rigidbody;
+        private Vector2 _force;
+        private Vector2? _relativeTo;
+        private float? _stunLength = 0f;
 
         public static KnockBack Knock(GameObject @this) => new KnockBack(@this);
         public static KnockBack Knock(Collision2D @this) => new KnockBack(@this);
@@ -21,58 +24,75 @@ namespace CommonAssets
         public KnockBack() { }
         public KnockBack(GameObject @this)
         {
-            this.rigidbody = @this.GetComponent<Rigidbody2D>();
+            this._rigidbody = @this.GetComponent<Rigidbody2D>();
+            Easily.StartCoroutine(_knockback());
+            
         }
         public KnockBack(Collision2D @this)
         {
-            this.rigidbody = @this.rigidbody;
+            this._rigidbody = @this.rigidbody;
+            Easily.StartCoroutine(_knockback());
         }
         public KnockBack(Collider2D @this)
         {
-            this.rigidbody = @this.attachedRigidbody;
+            this._rigidbody = @this.attachedRigidbody;
+            Easily.StartCoroutine(_knockback());
         }
         public KnockBack(Rigidbody2D @this)
         {
-            this.rigidbody = @this;
+            this._rigidbody = @this;
+            Easily.StartCoroutine(_knockback());
         }
 
-        public void From(GameObject relativeTo)
+        public KnockBack From(GameObject relativeTo)
         {
-            this.relativeTo = relativeTo.transform.position;
-            _knockback();
+            _relativeTo = relativeTo.transform.position;
+            return this;
         }
-        public void From(Transform relativeTo)
+        public KnockBack From(Transform relativeTo)
         {
-            this.relativeTo = relativeTo.position;
-            _knockback();
+            _relativeTo = relativeTo.position;
+            return this;
         }
-        public void From(Vector2 relativeTo)
+        public KnockBack From(Vector2 relativeTo)
         {
-            this.knockBack = relativeTo;
-            _knockback();
+            _relativeTo = relativeTo;
+            return this;
         }
-        public void From(Collider2D relativeTo)
+        public KnockBack From(Collider2D relativeTo)
         {
-            this.relativeTo = relativeTo.bounds.center;
-
-            _knockback();
+            _relativeTo = relativeTo.bounds.center;
+            return this;
         }
 
         public KnockBack Back(Vector2 force)
         {
-            knockBack = force;
+            _force = force;
             return this;
         }
 
-        private void _knockback()
+        public KnockBack StunningFor(float seconds)
         {
-            if (rigidbody != null)
-            {
-                Vector2 them = rigidbody.gameObject.transform.position;
-                float diff = Mathf.Sign(relativeTo.x - them.x);
+            _stunLength = seconds;
+            return this;
+        }
 
-                Vector2 theirvelocity = rigidbody.velocity;
-                rigidbody.velocity = new Vector2(-knockBack.x * diff, theirvelocity.y + knockBack.y);
+        private IEnumerator _knockback()
+        {
+            yield return new WaitForEndOfFrame();
+
+            if ( _rigidbody != null && _relativeTo != null )
+            {
+                Vector2 them = _rigidbody.gameObject.transform.position;
+                float diff = Mathf.Sign(((Vector2)_relativeTo).x - them.x);
+
+                Vector2 theirVelocity = _rigidbody.velocity;
+                _rigidbody.velocity = new Vector2(-_force.x * diff, theirVelocity.y + _force.y);
+
+                if (_stunLength != null)
+                {
+                    _rigidbody.gameObject.BroadcastMessage("Stun", _stunLength);
+                }
             }
         }
     }
