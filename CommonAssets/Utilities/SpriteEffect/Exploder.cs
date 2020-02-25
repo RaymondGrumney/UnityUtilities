@@ -10,12 +10,14 @@ namespace CommonAssets.Utilities
 {
     public class Exploder
     {
+		private bool freezeRotation = false;
 		private Sprite _sprite;
 		private int _pieces = 5;
 		private float _fadeOutTimeInSeconds = 2f;
 		private float _unitMass = 1f;
 		private float _force = 1f;
 		private Vector3? _worldPosition;
+		private Quaternion rotation;
 
 		/// <summary>
 		/// Explodes 
@@ -96,6 +98,18 @@ namespace CommonAssets.Utilities
 			_worldPosition = Easily.Clone( position );
 			return this;
 		}
+		
+		public Exploder Rotated(Quaternion rotation)
+		{
+			this.rotation = rotation;
+			return this;
+		}
+
+		public Exploder AndDisableRotationOfPieces()
+		{
+			freezeRotation = false;
+			return this;
+		}
 
 
 		/// <summary>
@@ -104,7 +118,6 @@ namespace CommonAssets.Utilities
 		/// <returns></returns>
 		private IEnumerator Splode()
 		{
-
 			yield return new WaitForEndOfFrame();
 
 			if (_sprite is null)
@@ -116,72 +129,130 @@ namespace CommonAssets.Utilities
 			{
 				throw new ArgumentNullException("Must set position in the world with At(Vector3 position).");
 			}
-			
-			Rect rect = _sprite.rect;
 
-			// Get sprite width and height
-			int width = Mathf.FloorToInt(rect.width);
-			int height = Mathf.FloorToInt(rect.height);
-
-			float unitWidth = (float)width / _pieces;
-			float unitHeight = (float)height / _pieces;
-
-			int partNumber = 0;
-
-			Transform parent = Easily.Instantiate(new GameObject(), (Vector3)_worldPosition).transform;
-			parent.gameObject.name = $"Exploded {_sprite.name}";
-			parent.gameObject.AddComponent<DestroyWhenNoChildren>();
+			InitializeBits( out Rect rect, out int width, out int height, out float unitWidth
+				          , out float unitHeight, out int partNumber );
+			Transform parent = CreateParent();
 
 			for (int i = 0; i < width / unitWidth; i++)
 			{
 				for (int j = 0; j < height / unitHeight; j++)
 				{
-					// Cut out the needed part from the texture
-					float x = rect.x + i * width / (width / unitWidth);
-					float y = rect.y + j * height / (height / unitHeight);
-					int rectWidth = Mathf.CeilToInt(unitWidth);
-					int rectHeight = Mathf.CeilToInt(unitHeight);
+					CreateSprite(out Sprite newSprite, ref rect, width, height, unitWidth, unitHeight, i, j);
+					CreateGameObject(partNumber
+								, parent
+								, out GameObject gObject
+								, out SpriteRenderer sRenderer
+								, out Rigidbody2D rBody);
+					AssignSprite(newSprite, sRenderer);
+					PlaceAsIfWereOriginalSPrite(i, j, gObject, sRenderer);
+					SetupRigidbody(rBody);
+					SpriteEffects.Fade(gObject).Out().Over(_fadeOutTimeInSeconds).Then.Destroy();
 
-					if (x + rectWidth > _sprite.texture.width)
-					{
-						rectWidth = Mathf.FloorToInt(_sprite.texture.width - x);
-					}
-					if (y + rectHeight > _sprite.texture.height)
-					{
-						rectHeight = Mathf.FloorToInt(_sprite.texture.height - y);
-					}
-
-					Sprite newSprite = Sprite.Create(texture: _sprite.texture,
-													  rect: new Rect(x, y, rectWidth, rectHeight),
-													  pivot: new Vector2(0f, 0f));
-
-					
-					GameObject gObject = new GameObject();
-					SpriteRenderer sRenderer = gObject.AddComponent<SpriteRenderer>();
-					Rigidbody2D rBody = gObject.AddComponent<Rigidbody2D>();
-					gObject.transform.parent = parent.transform;
-					gObject.name = _sprite.name + " part " + partNumber;
-
-					SpriteEffects.Fade(gObject).Out().Then.Destroy();
-
-					sRenderer.sprite = newSprite;
-					sRenderer.color = Color.white;
-					sRenderer.sortingLayerName = "Local Displays";
-
-					float offsetX = _sprite.bounds.min.x + (sRenderer.sprite.rect.width / _sprite.pixelsPerUnit) * i;
-					float offsetY = _sprite.bounds.min.y + (sRenderer.sprite.rect.width / _sprite.pixelsPerUnit) * j;
-
-					// Place every GameObject as it was in the original sprite
-					gObject.transform.position = (Vector3)_worldPosition + new Vector3(offsetX, offsetY, 0);
-
-
-					rBody.velocity = new Vector2(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(3f, 6f)) * _force;
-					rBody.freezeRotation = true;
-					rBody.mass = _unitMass;
 
 					partNumber++;
 				}
 			}
+		}
+
+		private void InitializeBits(out Rect rect, out int width, out int height, out float unitWidth, out float unitHeight, out int partNumber)
+		{
+			rect = _sprite.rect;
+
+			// Get sprite width and height
+			width = Mathf.FloorToInt(rect.width);
+			height = Mathf.FloorToInt(rect.height);
+			unitWidth = (float)width / _pieces;
+			unitHeight = (float)height / _pieces;
+			partNumber = 0;
+		}
+
+		private void SetupRigidbody(Rigidbody2D rBody)
+		{
+			float Random_X = UnityEngine.Random.Range(-2f, 2f);
+			float Random_Y = UnityEngine.Random.Range(3f, 6f);
+			if(freezeRotation)
+			{
+				rBody.freezeRotation = freezeRotation;
+				rBody.velocity = new Vector2(Random_X, Random_Y) * _force;
+			}
+			else
+			{
+				float Random_Z = UnityEngine.Random.Range(-60f, 60f);
+				rBody.velocity = new Vector3(Random_X, Random_Y) * _force;
+				rBody.angularVelocity = Random_Z * _force;
+			}
+			rBody.mass = _unitMass;
+		}
+
+		private void PlaceAsIfWereOriginalSPrite(int i, int j, GameObject gObject, SpriteRenderer sRenderer)
+		{
+			float offsetX = _sprite.bounds.min.x + (sRenderer.sprite.rect.width / _sprite.pixelsPerUnit) * i;
+			float offsetY = _sprite.bounds.min.y + (sRenderer.sprite.rect.width / _sprite.pixelsPerUnit) * j;
+
+			// Place every GameObject as it was in the original sprite
+			gObject.transform.position = (Vector3)_worldPosition + new Vector3(offsetX, offsetY, 0);
+		}
+
+		private static void AssignSprite(Sprite newSprite, SpriteRenderer sRenderer)
+		{
+			sRenderer.sprite = newSprite;
+			sRenderer.color = Color.white;
+			sRenderer.sortingLayerName = "Local Displays";
+		}
+
+		private Transform CreateParent()
+		{
+			GameObject parentObject = new GameObject();
+			Transform parent = parentObject.transform;
+			parentObject.name = $"Exploded {_sprite.name}";
+			parentObject.AddComponent<DestroyWhenNoChildren>();
+			parent.rotation = rotation;
+			parent.position = (Vector3) _worldPosition;
+			return parent;
+		}
+
+		private void CreateGameObject( int partNumber
+			                         , Transform parent
+			                         , out GameObject gObject
+			                         , out SpriteRenderer sRenderer
+			                         , out Rigidbody2D rBody )
+		{
+			gObject = new GameObject();
+			sRenderer = gObject.AddComponent<SpriteRenderer>();
+			rBody = gObject.AddComponent<Rigidbody2D>();
+			gObject.transform.parent = parent.transform;
+			gObject.name = _sprite.name + " part " + partNumber;
+		}
+
+		private void CreateSprite( out Sprite newSprite
+			                     , ref Rect rect
+			                     , int spriteWidth
+			                     , int spriteHeight
+			                     , float unitWidth
+			                     , float unitHeight
+			                     , int offsetX
+			                     , int offsetY )
+		{
+
+			// Cut out the needed part from the texture
+			float x = rect.x + offsetX * spriteWidth / (spriteWidth / unitWidth);
+			float y = rect.y + offsetY * spriteHeight / (spriteHeight / unitHeight);
+			int rectWidth = Mathf.CeilToInt(unitWidth);
+			int rectHeight = Mathf.CeilToInt(unitHeight);
+
+			if (x + rectWidth > _sprite.texture.width)
+			{
+				rectWidth = Mathf.FloorToInt(_sprite.texture.width - x);
+			}
+			if (y + rectHeight > _sprite.texture.height)
+			{
+				rectHeight = Mathf.FloorToInt(_sprite.texture.height - y);
+			}
+
+			newSprite = Sprite.Create(texture: _sprite.texture,
+											  rect: new Rect(x, y, rectWidth, rectHeight),
+											  pivot: new Vector2(0f, 0f));
 		}
 	}
 }
