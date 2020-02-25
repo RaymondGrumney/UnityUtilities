@@ -14,7 +14,7 @@ namespace CommonAssets.Utilities
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Get<T> Get<T>() => new Get<T>();
-        
+
         /// <summary>
         /// Parses an Enum of type T
         /// </summary>
@@ -78,6 +78,8 @@ namespace CommonAssets.Utilities
         public static Flip Flip(GameObject gameObject) => new Flip(gameObject);
 
         public static Vector3 Clone(Vector3 original) => new Vector3(original.x, original.y, original.z);
+        public static Quaternion Clone(Quaternion original)
+            => new Quaternion(original.x, original.y, original.z, original.w);
 
     }
 }
