@@ -8,19 +8,19 @@ namespace CommonAssets.Joypads.Presets
 {
     class XInputJoypad : JoypadPreset
     {
-        KeyCode JoypadPreset.jumpKey { get => Easily.Parse<KeyCode>("Button0"); }
-        KeyCode JoypadPreset.attackKey { get => Easily.Parse<KeyCode>("Button2"); }
-        KeyCode JoypadPreset.magicKey { get => Easily.Parse<KeyCode>("Button3"); }
-        KeyCode JoypadPreset.itemKey { get => Easily.Parse<KeyCode>("Button1"); }
-        KeyCode JoypadPreset.menuKey { get => Easily.Parse<KeyCode>("Button7"); }
-        KeyCode JoypadPreset.upKey { get => Easily.Parse<KeyCode>("6thAxis"); }
-        KeyCode JoypadPreset.downKey { get => Easily.Parse<KeyCode>("6thAxis"); }
-        KeyCode JoypadPreset.leftKey { get => Easily.Parse<KeyCode>("7thAxis"); }
-        KeyCode JoypadPreset.rightKey { get => Easily.Parse<KeyCode>("7thAxis"); }
-        string JoypadPreset.horizontalAxis { get => "6thAxis"; }
-        string JoypadPreset.verticalAxis { get => "7thAxis"; }
-        KeyCode JoypadPreset.menuConfirmKey { get => Easily.Parse<KeyCode>("Button0"); }
-        KeyCode JoypadPreset.menuCancelKey { get => Easily.Parse<KeyCode>("Button7"); }
-        KeyCode JoypadPreset.menuExitKey { get => Easily.Parse<KeyCode>("Button7"); }
+        string JoypadPreset.jumpKey { get => "JoystickButton0"; }
+        string JoypadPreset.attackKey { get => "JoystickButton2"; }
+        string JoypadPreset.magicKey { get => "JoystickButton3"; }
+        string JoypadPreset.itemKey { get => "JoystickButton1"; }
+        string JoypadPreset.menuKey { get => "JoystickButton7"; }
+        string JoypadPreset.upKey { get => "vertical"; }
+        string JoypadPreset.downKey { get => "vertical"; }
+        string JoypadPreset.leftKey { get => "horizontal"; }
+        string JoypadPreset.rightKey { get => "horizontal"; }
+        string JoypadPreset.horizontalAxis { get => "horizontal"; }
+        string JoypadPreset.verticalAxis { get => "vertical"; }
+        string JoypadPreset.menuConfirmKey { get => "JoystickButton0"; }
+        string JoypadPreset.menuCancelKey { get => "JoystickButton7"; }
+        string JoypadPreset.menuExitKey { get => "JoystickButton7"; }
     }
 }

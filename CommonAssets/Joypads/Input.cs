@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 namespace Joypad
 {
@@ -42,7 +43,7 @@ namespace Joypad
                 Destroy(gameObject);
             }
 
-            this.Set();
+            Set( );
         }
 
         /// <summary>
@@ -75,18 +76,18 @@ namespace Joypad
         {
             Map = new ButtonMap
             {
-                { "jump", preset.jumpKey.ToString() },
-                { "attack", preset.attackKey.ToString() },
-                { "magic", preset.magicKey.ToString() },
-                { "item", preset.itemKey.ToString() },
-                { "menu", preset.menuKey.ToString() },
-                { "menuConfirm", preset.menuConfirmKey.ToString() },
-                { "menuCancel", preset.menuCancelKey.ToString() },
-                { "menuExit", preset.menuExitKey.ToString() },
-                { "up", preset.upKey.ToString() },
-                { "down", preset.downKey.ToString() },
-                { "left", preset.leftKey.ToString() },
-                { "right", preset.rightKey.ToString() }
+                { "jump", preset.jumpKey },
+                { "attack", preset.attackKey },
+                { "magic", preset.magicKey },
+                { "item", preset.itemKey },
+                { "menu", preset.menuKey },
+                { "menuConfirm", preset.menuConfirmKey },
+                { "menuCancel", preset.menuCancelKey },
+                { "menuExit", preset.menuExitKey },
+                { "up", preset.upKey },
+                { "down", preset.downKey },
+                { "left", preset.leftKey },
+                { "right", preset.rightKey }
             };
         }
     }

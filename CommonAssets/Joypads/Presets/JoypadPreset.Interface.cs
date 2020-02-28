@@ -4,18 +4,18 @@ namespace CommonAssets.Joypads.Presets
 {
     public interface JoypadPreset
     {
-        KeyCode jumpKey { get; }
-        KeyCode attackKey { get; }
-        KeyCode magicKey { get; }
-        KeyCode itemKey { get; }
-        KeyCode menuKey { get; }
-        KeyCode menuConfirmKey { get; }
-        KeyCode menuCancelKey { get; }
-        KeyCode menuExitKey { get; }
-        KeyCode upKey { get; }
-        KeyCode downKey { get; }
-        KeyCode leftKey { get; }
-        KeyCode rightKey { get; }
+        string jumpKey { get; }
+        string attackKey { get; }
+        string magicKey { get; }
+        string itemKey { get; }
+        string menuKey { get; }
+        string menuConfirmKey { get; }
+        string menuCancelKey { get; }
+        string menuExitKey { get; }
+        string upKey { get; }
+        string downKey { get; }
+        string leftKey { get; }
+        string rightKey { get; }
         string horizontalAxis { get; }
         string verticalAxis { get; }
     }
