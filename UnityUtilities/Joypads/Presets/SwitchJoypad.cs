@@ -1,6 +1,6 @@
 //using UnityEngine;
 
-//namespace CommonAssets.Joypads.Presets
+//namespace UnityUtilities.Joypads.Presets
 //{
 //    public class SwitchProController : JoypadPreset
 //    {

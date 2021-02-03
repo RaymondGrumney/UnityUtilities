@@ -1,5 +1,5 @@
-# CommonAssets
-Common Assets for use in Unity Projects.
+# UnityUtilities
+Utilities for use in Unity Projects.
 
 ## Joypads
 An abstraction of joypad/keyboard input in Unity, with presets and custom mapping of actions to inputs.
