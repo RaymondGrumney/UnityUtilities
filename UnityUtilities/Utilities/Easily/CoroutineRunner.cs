@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace CommonAssets.Utilities
+namespace UnityUtilities.Utilities
 {
     public class CoroutineRunner : MonoBehaviour
     {
