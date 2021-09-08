@@ -1,4 +1,4 @@
-﻿using CommonAssets.Utilities;
+﻿using UnityUtilities.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace CommonAssets
+namespace UnityUtilities.Utilities
 {
     public class KnockBack
     {

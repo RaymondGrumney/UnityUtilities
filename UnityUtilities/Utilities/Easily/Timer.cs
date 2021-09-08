@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-namespace CommonAssets.Utilities
+namespace UnityUtilities.Utilities
 {
     [Serializable]
     public class Timer

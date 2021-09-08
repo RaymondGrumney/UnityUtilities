@@ -2,8 +2,8 @@
  
 using UnityEngine;
 using System.Collections;
-using CommonAssets.Joypads.Presets;
-using CommonAssets.Utilities;
+using UnityUtilities.Joypads.Presets;
+using UnityUtilities.Utilities;
 using System.Collections.Generic;
 using System;
 using System.Linq;

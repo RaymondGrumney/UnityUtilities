@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CommonAssets.Utilities
+namespace UnityUtilities.Utilities
 {
     /// <summary>
     /// Applys effects to sprites

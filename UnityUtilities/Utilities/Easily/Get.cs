@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace CommonAssets.Utilities
+namespace UnityUtilities.Utilities
 {
     public class Get<T>
     {

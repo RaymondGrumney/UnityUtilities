@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CommonAssets.Utilities
+namespace UnityUtilities.Utilities
 {
     public class Repeat
     {

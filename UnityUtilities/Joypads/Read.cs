@@ -1,6 +1,6 @@
 // based on: https://www.studica.com/blog/custom-input-manager-unity-tutorial
 
-using CommonAssets.Utilities;
+using UnityUtilities.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;

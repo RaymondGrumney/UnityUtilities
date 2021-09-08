@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace CommonAssets.Utilities
+namespace UnityUtilities.Utilities
 {
     /// <summary>
     /// Gets things

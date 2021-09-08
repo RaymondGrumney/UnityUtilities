@@ -1,4 +1,4 @@
-﻿namespace CommonAssets.Utilities
+﻿namespace UnityUtilities.Utilities
 {
     public enum GetterType 
     { 

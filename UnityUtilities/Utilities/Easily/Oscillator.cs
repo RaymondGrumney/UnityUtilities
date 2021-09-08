@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace CommonAssets
+namespace UnityUtilities.Utilities
 {
     /// <summary>
     /// Oscillates between two value as time passes in game.
