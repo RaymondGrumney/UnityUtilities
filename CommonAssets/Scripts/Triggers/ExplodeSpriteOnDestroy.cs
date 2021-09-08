@@ -19,9 +19,16 @@ namespace Assets.Common.CommonAssets
         public float force = 1f;
         [Tooltip("How long each piece remains on screen before fading out.")]
         public float unitFadeOutTimeInSeconds = 3f;
+        private bool isQuitting = false;
+
+        void OnApplicationQuit()
+        {
+            isQuitting = true;
+        }
 
         private void OnDestroy()
         {
+            if(!isQuitting)
             SpriteEffects.Explode( GetComponent<SpriteRenderer>().sprite )
                          .Into( unitsSquared ).Pieces()
                          .At( Easily.Clone( transform.position ))
