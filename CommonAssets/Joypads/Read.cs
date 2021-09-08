@@ -13,7 +13,7 @@ namespace Joypad
     {
         [SerializeField] public string Input;
         [SerializeField] public bool State;
-
+        
         public Boolple() { }
 
         public Boolple(string key)
@@ -89,7 +89,9 @@ namespace Joypad
         /// <returns></returns>
         public bool Held(string action)
         {
-            return AxesInput(action) ?? UnityEngine.Input.GetKey(Easily.Parse<KeyCode>(Input.Buttons.Map[action]));
+            return AxesInput(action.ToLower()) ?? UnityEngine.Input.GetKey(Easily.Parse<KeyCode>(Input.Buttons.Map[action.ToLower()]));
+            return AxesInput(action.ToLower()) ?? UnityEngine.Input.GetKey(Easily.Parse<KeyCode>(Input.Buttons.Map[action.ToLower()]));
+            
         }
 
         /// <summary>
@@ -99,7 +101,7 @@ namespace Joypad
         /// <returns></returns>
         public bool Pressed(string action)
         {
-            return AxesInput(action) ?? UnityEngine.Input.GetKeyDown(Easily.Parse<KeyCode>(Input.Buttons.Map[action]));
+            return AxesInput(action.ToLower()) ?? UnityEngine.Input.GetKeyDown(Easily.Parse<KeyCode>(Input.Buttons.Map[action.ToLower()]));
         }
 
         /// <summary>
@@ -109,7 +111,7 @@ namespace Joypad
         /// <returns></returns>
         public bool Released(string action)
         {
-            return AxesInput(action) ?? UnityEngine.Input.GetKeyUp(Easily.Parse<KeyCode>(Input.Buttons.Map[action]));
+            return AxesInput(action.ToLower()) ?? UnityEngine.Input.GetKeyUp(Easily.Parse<KeyCode>(Input.Buttons.Map[action.ToLower()]));
         }
 
         /// <summary>
@@ -120,7 +122,7 @@ namespace Joypad
         public bool? AxesInput(string action)
         {
             // TODO: Handle Axises better. Store which is negative
-            if (Input.Buttons.Map[action].ToString().ToLower() == ("vertical"))
+            if (Input.Buttons.Map[action].ToString().ToLower() == "vertical")
             {
                 if (action == "up")
                 {
@@ -168,9 +170,7 @@ namespace Joypad
         }
 
         public float horizontal => Held("right") ? 1f : Held("left") ? -1 : 0;
-        //public float horizontal => UnityEngine.Input.GetAxis(Joypad.Input.Buttons.horizontal);
-        public float vertical => Held("up") ? 1f : Held( "down" ) ? -1 : 0;
-        //public float vertical => UnityEngine.Input.GetAxis(Joypad.Input.Buttons.vertical);
+        public float vertical => Held("up") ? 1f : Held("down") ? -1 : 0;
     }
 
 }

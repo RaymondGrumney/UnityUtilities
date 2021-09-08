@@ -64,7 +64,20 @@ namespace Joypad
                 { "up", KeyCode.W.ToString() },
                 { "down", KeyCode.S.ToString() },
                 { "left", KeyCode.A.ToString() },
-                { "right", KeyCode.D.ToString() }
+                { "right", KeyCode.D.ToString() },
+                { "cyclemagicleft", KeyCode.LeftArrow.ToString() },
+                { "cyclemagicright", KeyCode.RightArrow.ToString() },
+                { "item1", KeyCode.Alpha1.ToString() },
+                { "item2", KeyCode.Alpha2.ToString() },
+                { "item3", KeyCode.Alpha3.ToString() },
+                { "item4", KeyCode.Alpha4.ToString() },
+                { "item5", KeyCode.Alpha5.ToString() },
+                { "item6", KeyCode.Alpha6.ToString() },
+                { "item7", KeyCode.Alpha7.ToString() },
+                { "item8", KeyCode.Alpha8.ToString() },
+                { "item9", KeyCode.Alpha9.ToString() },
+                { "item10", KeyCode.Alpha0.ToString() },
+                { "quit", KeyCode.F12.ToString() }
             };
         }
 
