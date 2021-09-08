@@ -81,5 +81,13 @@ namespace CommonAssets.Utilities
         public static Quaternion Clone(Quaternion original)
             => new Quaternion(original.x, original.y, original.z, original.w);
 
+        public static Repeat Repeat(Action action)
+            => new Repeat(action);
+
+        public static Getter<T> GetChild<T>(string name)
+            => new Getter<T>(GetterType.ChildByName).Query(name);
+
+        public static Oscillator Oscillate
+            => new Oscillator();
     }
 }
