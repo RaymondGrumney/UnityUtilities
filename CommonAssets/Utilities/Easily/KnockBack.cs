@@ -24,7 +24,7 @@ namespace CommonAssets
         public KnockBack() { }
         public KnockBack(GameObject @this)
         {
-            this._rigidbody = @this.GetComponent<Rigidbody2D>();
+            this._rigidbody = @this.GetComponentInParent<Rigidbody2D>();
             Easily.StartCoroutine(_knockback());
             
         }
