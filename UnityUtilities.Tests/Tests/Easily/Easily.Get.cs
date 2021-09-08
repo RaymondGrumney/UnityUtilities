@@ -1,4 +1,4 @@
-using CommonAssets.Utilities;
+using UnityUtilities.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +12,7 @@ namespace UnitTest.Easily
         public void GivesDefaultString()
         {
             string Example = "test";
-            string Test = CommonAssets.Utilities.Easily.Get<string>().OrDefault("test");
+            string Test = UnityUtilities.Utilities.Easily.Get<string>().OrDefault("test");
 
             Assert.AreEqual(Example, Test);
         }
@@ -21,7 +21,7 @@ namespace UnitTest.Easily
         public void GivesDefaultEnum()
         {
             KeyCode Example = KeyCode.T;
-            KeyCode Test = CommonAssets.Utilities.Easily.Get<KeyCode>().OrDefault(KeyCode.T);
+            KeyCode Test = UnityUtilities.Utilities.Easily.Get<KeyCode>().OrDefault(KeyCode.T);
 
             Assert.AreEqual(Example, Test);
         }
@@ -40,7 +40,7 @@ namespace UnitTest.Easily
             UnityEngine.PlayerPrefs.SetString("test", "moogle");
 
             string Example = UnityEngine.PlayerPrefs.GetString("test");
-            string Test = CommonAssets.Utilities.Easily.Get<string>().From.PlayerPrefs("test").Please;
+            string Test = UnityUtilities.Utilities.Easily.Get<string>().From.PlayerPrefs("test").Please;
 
             Assert.AreEqual(Example, Test);
         }

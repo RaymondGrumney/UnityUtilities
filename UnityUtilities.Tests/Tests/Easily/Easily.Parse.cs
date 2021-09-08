@@ -1,4 +1,4 @@
-using CommonAssets.Utilities;
+using UnityUtilities.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnityEngine;
 
@@ -11,7 +11,7 @@ namespace UnitTest.Easily
         public void ParsesKeyCodes()
         {
             KeyCode Example = KeyCode.A;
-            KeyCode Test = CommonAssets.Utilities.Easily.Parse<KeyCode>("A");
+            KeyCode Test = UnityUtilities.Utilities.Easily.Parse<KeyCode>("A");
             Assert.AreEqual(Example, Test);
         }
 
@@ -19,7 +19,7 @@ namespace UnitTest.Easily
         public void ParsesArbitraryEnum()
         {
             ArbitraryEnum Example = ArbitraryEnum.SpanishInquisition;
-            var Test = CommonAssets.Utilities.Easily.Parse<ArbitraryEnum>("SpanishInquisition");
+            var Test = UnityUtilities.Utilities.Easily.Parse<ArbitraryEnum>("SpanishInquisition");
 
             Assert.AreEqual(Example, Test);
         }
