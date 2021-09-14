@@ -43,7 +43,7 @@ namespace Joypad
                 Destroy(gameObject);
             }
 
-            Set( );
+            Set();
         }
 
         /// <summary>

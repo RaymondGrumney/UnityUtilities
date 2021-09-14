@@ -6,7 +6,7 @@ namespace UnityUtilities.Utilities
     {
         private Action _action;
 
-        public Repeat(Action action) 
+        public Repeat(Action action)
         {
             _action = action;
         }

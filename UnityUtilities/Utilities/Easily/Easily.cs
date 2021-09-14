@@ -72,8 +72,10 @@ namespace UnityUtilities.Utilities
         /// <returns></returns>
         public static KnockBack Knock(Rigidbody2D rigidBody) => new KnockBack(rigidBody);
 
-        public static void StartCoroutine(IEnumerator coroutine)
-            => CoroutineRunner.RunCoroutine(coroutine);
+        public static CoroutineRunner StartCoroutine(IEnumerator coroutine)
+            => CoroutineRunner.Init(coroutine);
+        public static CoroutineRunner StartCoroutine(Action action)
+            => CoroutineRunner.Init(null, action);
 
         public static Flip Flip(GameObject gameObject) => new Flip(gameObject);
 

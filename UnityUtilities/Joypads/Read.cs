@@ -90,7 +90,6 @@ namespace Joypad
         public bool Held(string action)
         {
             return AxesInput(action.ToLower()) ?? UnityEngine.Input.GetKey(Easily.Parse<KeyCode>(Input.Buttons.Map[action.ToLower()]));
-            return AxesInput(action.ToLower()) ?? UnityEngine.Input.GetKey(Easily.Parse<KeyCode>(Input.Buttons.Map[action.ToLower()]));
             
         }
 
