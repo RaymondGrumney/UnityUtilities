@@ -12,15 +12,11 @@ namespace UnityUtilities.Utilities
 
         public static CoroutineRunner Init(IEnumerator coroutine = null, Action action = null ) 
         {
-            // if (action !=null) Debug.Log($"Init({coroutine}, {action}), {action?.Target}");
             GameObject coroutineObj = GameObject.Find("Coroutines");
             CoroutineRunner coroutineRunner;
             if (coroutineObj) 
             {
                 coroutineRunner = coroutineObj.AddComponent<CoroutineRunner>();
-                // if (coroutineRunner is null) {
-                //     coroutineRunner = coroutineObj.AddComponent<CoroutineRunner>();
-                // }
             }
             else 
             {
@@ -37,6 +33,15 @@ namespace UnityUtilities.Utilities
         {
             _do();
         }
+        public void AtEndofFrame() 
+        {
+            StartCoroutine(_atEndOfFrame());
+        }
+        private IEnumerator _atEndOfFrame() 
+        {
+            yield return new WaitForEndOfFrame();
+            _do();
+        }
 
         public CoroutineRunner After(float n) 
         {
@@ -47,27 +52,23 @@ namespace UnityUtilities.Utilities
 
         public void Seconds() 
         {
-            StartCoroutine("_wait");
+            StartCoroutine(_waitForSecondsRealtime());
         }
 
-        private IEnumerator _wait()
+        private IEnumerator _waitForSecondsRealtime()
         {
-            // if (_action !=null) Debug.Log($"_wait({_n}), {_action?.Target}");
             yield return new WaitForSecondsRealtime(_n);
-            // if (_action !=null) Debug.Log($"waited {_n}, {_action?.Target}");
             _do();
         }
 
         private void _do() 
         {
-            // if (_action !=null) Debug.Log($"_do() {_action?.Target}, {_action?.Target}");
             if(_coroutine != null) 
             {
                 StartCoroutine(_coroutine);
             }
             else 
             {
-                // if (_action !=null) Debug.Log($"({_action?.Target}), {_action?.Target}");
                 _action();
             }
             Destroy(this);
