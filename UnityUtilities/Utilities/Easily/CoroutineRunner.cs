@@ -47,7 +47,6 @@ namespace UnityUtilities.Utilities
 
         public void Seconds() 
         {
-            if (_action !=null) Debug.Log($"Seconds, {_action?.Target}");
             StartCoroutine("_wait");
         }
 
