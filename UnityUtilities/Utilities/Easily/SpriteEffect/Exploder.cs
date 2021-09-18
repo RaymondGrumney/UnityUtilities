@@ -236,25 +236,25 @@ namespace UnityUtilities.Utilities
 			                     , int offsetX
 			                     , int offsetY )
 		{
-
 			// Cut out the needed part from the texture
-			float x = rect.x + offsetX * spriteWidth / (spriteWidth / unitWidth);
-			float y = rect.y + offsetY * spriteHeight / (spriteHeight / unitHeight);
+			float rectX = rect.x + offsetX * spriteWidth / (spriteWidth / unitWidth);
+			float rectY = rect.y + offsetY * spriteHeight / (spriteHeight / unitHeight);
 			int rectWidth = Mathf.CeilToInt(unitWidth);
 			int rectHeight = Mathf.CeilToInt(unitHeight);
 
-			if (x + rectWidth > _sprite.texture.width)
+			if (rectX + rectWidth > _sprite.texture.width)
 			{
-				rectWidth = Mathf.FloorToInt(_sprite.texture.width - x);
+				rectWidth = Mathf.FloorToInt(_sprite.texture.width - rectX);
 			}
-			if (y + rectHeight > _sprite.texture.height)
+			if (rectY + rectHeight > _sprite.texture.height)
 			{
-				rectHeight = Mathf.FloorToInt(_sprite.texture.height - y);
+				rectHeight = Mathf.FloorToInt(_sprite.texture.height - rectY);
 			}
 
-			newSprite = Sprite.Create(texture: _sprite.texture,
-											  rect: new Rect(x, y, rectWidth, rectHeight),
-											  pivot: new Vector2(0f, 0f));
+			newSprite = Sprite.Create(  texture: _sprite.texture,
+										rect: new Rect(rectX, rectY, rectWidth, rectHeight),
+										pivot: new Vector2(0f, 0f),
+										pixelsPerUnit: _sprite.pixelsPerUnit);
 		}
 	}
 }
