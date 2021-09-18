@@ -29,14 +29,14 @@ namespace Assets.Common.CommonAssets
         private void OnDestroy()
         {
             if(!isQuitting)
-            SpriteEffects.Explode( GetComponent<SpriteRenderer>().sprite )
-                         .Into( unitsSquared ).Pieces()
-                         .At( Easily.Clone( transform.position ))
-                         .EachPieceWeighing( pieceMass )
-                         .FadingOutAfter( unitFadeOutTimeInSeconds )
-                         //.AndDisableRotationOfPieces()
-                         .Rotated(transform.rotation)
-                         .WithForce( force );
+                SpriteEffects.Explode( GetComponent<SpriteRenderer>().sprite )
+                                .Into( unitsSquared ).Pieces()
+                                .At( Easily.Clone( transform.position ))
+                                .EachPieceWeighing( pieceMass )
+                                .FadingOutAfter( unitFadeOutTimeInSeconds )
+                                //.AndDisableRotationOfPieces()
+                                .Rotated(transform.rotation)
+                                .WithForce( force );
         }
     }
 }

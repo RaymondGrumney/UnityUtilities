@@ -26,7 +26,7 @@ namespace UnityUtilities.Utilities
 		public Exploder(Sprite sprite)
 		{
 			_sprite = sprite;
-			Easily.StartCoroutine( Splode() ).Now();
+			Easily.StartCoroutine( () => Splode() ).AtEndofFrame();
 		}
 
 		/// <summary>
@@ -95,7 +95,7 @@ namespace UnityUtilities.Utilities
 		/// <returns></returns>
 		public Exploder At(Vector3 position)
 		{
-			_worldPosition = Easily.Clone( position );
+			_worldPosition = position ;
 			return this;
 		}
 		
@@ -116,10 +116,8 @@ namespace UnityUtilities.Utilities
 		/// Does the work.
 		/// </summary>
 		/// <returns></returns>
-		private IEnumerator Splode()
+		private void Splode()
 		{
-			yield return new WaitForEndOfFrame();
-
 			if (_sprite is null)
 			{
 				throw new ArgumentNullException("Sprite cannot be null.");
@@ -149,13 +147,17 @@ namespace UnityUtilities.Utilities
 					SetupRigidbody(rBody);
 					SpriteEffects.Fade(gObject).Out().Over(_fadeOutTimeInSeconds).Then.Destroy();
 
-
 					partNumber++;
 				}
 			}
 		}
 
-		private void InitializeBits(out Rect rect, out int width, out int height, out float unitWidth, out float unitHeight, out int partNumber)
+		private void InitializeBits(  out Rect rect
+									, out int width
+									, out int height
+									, out float unitWidth
+									, out float unitHeight
+									, out int partNumber )
 		{
 			rect = _sprite.rect;
 
