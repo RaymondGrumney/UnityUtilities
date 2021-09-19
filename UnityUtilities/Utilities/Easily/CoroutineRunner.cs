@@ -33,13 +33,25 @@ namespace UnityUtilities.Utilities
         {
             _do();
         }
+
         public void AtEndofFrame() 
         {
             StartCoroutine(_atEndOfFrame());
         }
+
         private IEnumerator _atEndOfFrame() 
         {
             yield return new WaitForEndOfFrame();
+            _do();
+        }
+
+        public void WaitForFixedUpdate() 
+        {
+            StartCoroutine(_waitForFixedUpdate());
+        }
+                private IEnumerator _waitForFixedUpdate() 
+        {
+            yield return new WaitForFixedUpdate();
             _do();
         }
 
