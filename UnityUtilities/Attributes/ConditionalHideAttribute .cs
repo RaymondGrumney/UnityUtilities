@@ -1,5 +1,5 @@
 /*
-  This script from: http://www.brechtos.com/hiding-or-disabling-inspector-properties-using-propertydrawers-within-unity-5/
+  This script adapted from: http://www.brechtos.com/hiding-or-disabling-inspector-properties-using-propertydrawers-within-unity-5/
 */
 
 using UnityEngine;
@@ -11,19 +11,13 @@ using System.Collections;
 public class ConditionalHideAttribute : PropertyAttribute
 {
     //The name of the bool field that will be in control
-    public string ConditionalSourceField = "";
+    public string[] ConditionalSourceFields = new string[] {""};
     //TRUE = Hide in inspector / FALSE = Disable in inspector 
     public bool HideInInspector = false;
  
-    public ConditionalHideAttribute(string conditionalSourceField)
+    public ConditionalHideAttribute(params string[] conditionalSourceField)
     {
-        this.ConditionalSourceField = conditionalSourceField;
+        this.ConditionalSourceFields = conditionalSourceField;
         this.HideInInspector = false;
-    }
- 
-    public ConditionalHideAttribute(string conditionalSourceField, bool hideInInspector)
-    {
-        this.ConditionalSourceField = conditionalSourceField;
-        this.HideInInspector = hideInInspector;
     }
 }

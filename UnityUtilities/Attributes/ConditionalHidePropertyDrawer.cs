@@ -15,7 +15,7 @@ public class ConditionalHidePropertyDrawer : PropertyDrawer
  
         bool wasEnabled = GUI.enabled;
         GUI.enabled = enabled;
-        if (!condHAtt.HideInInspector || enabled)
+        if (enabled)
         {
             EditorGUI.PropertyField(position, property, label, true);
         }
@@ -42,18 +42,23 @@ public class ConditionalHidePropertyDrawer : PropertyDrawer
     {
         bool enabled = true;
         string propertyPath = property.propertyPath; //returns the property path of the property we want to apply the attribute to
-        string conditionPath = propertyPath.Replace(property.name, condHAtt.ConditionalSourceField); //changes the path to the conditionalsource property path
-        SerializedProperty sourcePropertyValue = property.serializedObject.FindProperty(conditionPath);
- 
-        if (sourcePropertyValue != null)
+
+        foreach(string conditionalSourceField in condHAtt.ConditionalSourceFields) 
         {
-            enabled = sourcePropertyValue.boolValue;
+            string conditionPath = propertyPath.Replace(property.name, conditionalSourceField); //changes the path to the conditionalsource property path
+            SerializedProperty sourcePropertyValue = property.serializedObject.FindProperty(conditionPath);
+
+            if (sourcePropertyValue != null)
+            {
+                enabled = sourcePropertyValue.boolValue;
+                if(enabled) break;
+            }
+            else
+            {
+                Debug.LogWarning("Attempting to use a ConditionalHideAttribute but no matching SourcePropertyValue found in object: " + conditionalSourceField);
+            }
         }
-        else
-        {
-            Debug.LogWarning("Attempting to use a ConditionalHideAttribute but no matching SourcePropertyValue found in object: " + condHAtt.ConditionalSourceField);
-        }
- 
+
         return enabled;
     }
 }
