@@ -25,23 +25,23 @@ namespace UnityUtilities.Utilities
         public KnockBack(GameObject @this)
         {
             this._rigidbody = @this.GetComponentInParent<Rigidbody2D>();
-            Easily.StartCoroutine(_knockback()).Now();
+            Easily.StartCoroutine(() => _knockback()).AtEndofFrame();
             
         }
         public KnockBack(Collision2D @this)
         {
             this._rigidbody = @this.rigidbody;
-            Easily.StartCoroutine(_knockback()).Now();
+            Easily.StartCoroutine(() => _knockback()).AtEndofFrame();
         }
         public KnockBack(Collider2D @this)
         {
             this._rigidbody = @this.attachedRigidbody;
-            Easily.StartCoroutine(_knockback()).Now();
+            Easily.StartCoroutine(() => _knockback()).AtEndofFrame();
         }
         public KnockBack(Rigidbody2D @this)
         {
             this._rigidbody = @this;
-            Easily.StartCoroutine(_knockback()).Now();
+            Easily.StartCoroutine(() => _knockback()).AtEndofFrame();
         }
 
         public KnockBack From(GameObject relativeTo)
@@ -77,10 +77,8 @@ namespace UnityUtilities.Utilities
             return this;
         }
 
-        private IEnumerator _knockback()
+        private void _knockback()
         {
-            yield return new WaitForEndOfFrame();
-
             if ( _rigidbody != null && _relativeTo != null )
             {
                 Vector2 them = _rigidbody.gameObject.transform.position;
