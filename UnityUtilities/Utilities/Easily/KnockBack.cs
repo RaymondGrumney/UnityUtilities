@@ -89,7 +89,7 @@ namespace UnityUtilities.Utilities
 
                 if (_stunLength != null)
                 {
-                    _rigidbody.gameObject.BroadcastMessage("Stun", _stunLength);
+                    _rigidbody.gameObject.BroadcastMessage("Stun", _stunLength, SendMessageOptions.DontRequireReceiver);
                 }
             }
         }
