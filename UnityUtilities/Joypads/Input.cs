@@ -57,6 +57,7 @@ namespace Joypad
                 { "attack", KeyCode.Return.ToString() },
                 { "magic", KeyCode.M.ToString() },
                 { "item", KeyCode.RightShift.ToString() },
+                { "shield", KeyCode.LeftShift.ToString() },
                 { "menu", KeyCode.Escape.ToString() },
                 { "menuConfirm", KeyCode.Space.ToString() },
                 { "menuCancel", KeyCode.Backspace.ToString() },
