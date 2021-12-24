@@ -55,6 +55,7 @@ namespace Joypad
             {
                 { "jump", KeyCode.Space.ToString() },
                 { "attack", KeyCode.Return.ToString() },
+                { "interact", KeyCode.Return.ToString() },
                 { "magic", KeyCode.M.ToString() },
                 { "item", KeyCode.RightShift.ToString() },
                 { "shield", KeyCode.LeftShift.ToString() },
@@ -92,6 +93,7 @@ namespace Joypad
             {
                 { "jump", preset.jumpKey },
                 { "attack", preset.attackKey },
+                { "activate", preset.interactKey },
                 { "magic", preset.magicKey },
                 { "item", preset.itemKey },
                 { "menu", preset.menuKey },
