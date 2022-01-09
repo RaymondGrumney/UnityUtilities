@@ -52,6 +52,7 @@ namespace UnityUtilities.Utilities
         /// </summary>
         public bool Complete
             => this.Over;
+            
         /// <summary>
         /// If the timer has run out.
         /// </summary>

@@ -25,23 +25,23 @@ namespace UnityUtilities.Utilities
         public KnockBack(GameObject @this)
         {
             this._rigidbody = @this.GetComponentInParent<Rigidbody2D>();
-            Easily.StartCoroutine(() => _knockback()).AtEndofFrame();
+            Easily.StartCoroutine(() => _knockback()).AtEndOfFrame();
             
         }
         public KnockBack(Collision2D @this)
         {
             this._rigidbody = @this.rigidbody;
-            Easily.StartCoroutine(() => _knockback()).AtEndofFrame();
+            Easily.StartCoroutine(() => _knockback()).AtEndOfFrame();
         }
         public KnockBack(Collider2D @this)
         {
             this._rigidbody = @this.attachedRigidbody;
-            Easily.StartCoroutine(() => _knockback()).AtEndofFrame();
+            Easily.StartCoroutine(() => _knockback()).AtEndOfFrame();
         }
         public KnockBack(Rigidbody2D @this)
         {
             this._rigidbody = @this;
-            Easily.StartCoroutine(() => _knockback()).AtEndofFrame();
+            Easily.StartCoroutine(() => _knockback()).AtEndOfFrame();
         }
 
         public KnockBack From(GameObject relativeTo)

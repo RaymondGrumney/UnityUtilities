@@ -2,66 +2,66 @@
 using System.Collections;
 using UnityEngine;
 
-namespace UnityUtilities.Utilities 
+namespace UnityUtilities.Utilities
 {
-    public class CoroutineRunner : MonoBehaviour 
+    public class CoroutineRunner : MonoBehaviour
     {
         protected IEnumerator _coroutine;
         protected Action _action;
         private float _n = 0;
 
-        public static CoroutineRunner Init(IEnumerator coroutine = null, Action action = null ) 
+        public static CoroutineRunner Init(IEnumerator coroutine = null, Action action = null)
         {
             GameObject coroutineObj = GameObject.Find("Coroutines");
             CoroutineRunner coroutineRunner;
-            if (coroutineObj) 
+            if (coroutineObj)
             {
                 coroutineRunner = coroutineObj.AddComponent<CoroutineRunner>();
             }
-            else 
+            else
             {
                 coroutineObj = Easily.Instantiate(new GameObject(), new Vector3());
                 coroutineObj.name = "Coroutines";
                 coroutineRunner = coroutineObj.AddComponent<CoroutineRunner>();
             }
-            coroutineRunner._coroutine=coroutine;
-            coroutineRunner._action=action;
+            coroutineRunner._coroutine = coroutine;
+            coroutineRunner._action = action;
             return coroutineRunner;
         }
 
-        public void Now() 
+        public void Now()
         {
             _do();
         }
 
-        public void AtEndofFrame() 
+        public void AtEndOfFrame()
         {
             StartCoroutine(_atEndOfFrame());
         }
 
-        private IEnumerator _atEndOfFrame() 
+        private IEnumerator _atEndOfFrame()
         {
             yield return new WaitForEndOfFrame();
             _do();
         }
 
-        public void WaitForFixedUpdate() 
+        public void WaitForFixedUpdate()
         {
             StartCoroutine(_waitForFixedUpdate());
         }
-                private IEnumerator _waitForFixedUpdate() 
+        private IEnumerator _waitForFixedUpdate()
         {
             yield return new WaitForFixedUpdate();
             _do();
         }
 
-        public CoroutineRunner After(float n) 
+        public CoroutineRunner After(float n)
         {
             _n = n;
             return this;
         }
 
-        public void Seconds() 
+        public void Seconds()
         {
             StartCoroutine(_waitForSecondsRealtime());
         }
@@ -72,13 +72,13 @@ namespace UnityUtilities.Utilities
             _do();
         }
 
-        private void _do() 
+        private void _do()
         {
-            if(_coroutine != null) 
+            if (_coroutine != null)
             {
                 StartCoroutine(_coroutine);
             }
-            else 
+            else
             {
                 _action();
             }

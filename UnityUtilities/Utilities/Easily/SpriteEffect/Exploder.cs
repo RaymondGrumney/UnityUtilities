@@ -26,7 +26,7 @@ namespace UnityUtilities.Utilities
 		public Exploder(Sprite sprite)
 		{
 			_sprite = sprite;
-			Easily.StartCoroutine( () => Splode() ).AtEndofFrame();
+			Easily.StartCoroutine( () => Splode() ).AtEndOfFrame();
 		}
 
 		/// <summary>
