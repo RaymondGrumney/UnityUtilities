@@ -6,7 +6,7 @@ namespace UnityUtilities.Joypads.Presets
     {
         string jumpKey { get; }
         string attackKey { get; }
-        string shield { get; }
+        string shieldKey { get; }
         string interactKey { get; }
         string magicKey { get; }
         string cyclemagicright { get; }

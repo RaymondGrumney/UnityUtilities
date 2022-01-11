@@ -10,7 +10,7 @@ namespace UnityUtilities.Joypads.Presets
     {
         string JoypadPreset.jumpKey { get => "JoystickButton0"; }
         string JoypadPreset.attackKey { get => "JoystickButton2"; }
-        string JoypadPreset.shield { get => "righttrigger"; }
+        string JoypadPreset.shieldKey { get => "righttrigger"; }
         string JoypadPreset.interactKey { get => "JoystickButton2"; }
         string JoypadPreset.magicKey { get => "JoystickButton3"; }
         string JoypadPreset.cyclemagicleft { get => "JoystickButton4"; }
