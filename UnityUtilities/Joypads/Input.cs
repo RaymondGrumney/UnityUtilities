@@ -2,6 +2,7 @@
  
 using UnityEngine;
 using System.Collections;
+using Joypads = UnityUtilities.Joypads;
 using UnityUtilities.Joypads.Presets;
 using UnityUtilities.Utilities;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace Joypad
         /// Maps action names to joypad/keyboard inputs
         /// </summary>
         public ButtonMap Map = new ButtonMap();
+        public string ConnectedJoypadName;
 
         void Awake()
         {
@@ -44,6 +46,29 @@ namespace Joypad
             }
 
             Set();
+        }
+
+        private void Update() 
+        {
+            string[] js = UnityEngine.Input.GetJoystickNames();
+            string j = "";
+            foreach (string item in js)
+            {
+                if(!String.IsNullOrEmpty(item)) { j = item; break; }
+            }
+
+            if ( j != ConnectedJoypadName) 
+            {
+                Debug.Log(j);
+                ConnectedJoypadName = j;
+                switch (ConnectedJoypadName)
+                {
+                    case "Controller (XBOX 360 For Windows)":
+                        Set(new XInputJoypad());
+                        break;
+                    default: break;
+                }
+            }
         }
 
         /// <summary>
@@ -93,17 +118,21 @@ namespace Joypad
             {
                 { "jump", preset.jumpKey },
                 { "attack", preset.attackKey },
+                { "shield", preset.shieldKey },
                 { "activate", preset.interactKey },
                 { "magic", preset.magicKey },
+                { "cyclemagicleft", preset.cyclemagicleft },
+                { "cyclemagicright", preset.cyclemagicright },
                 { "item", preset.itemKey },
                 { "menu", preset.menuKey },
-                { "menuConfirm", preset.menuConfirmKey },
-                { "menuCancel", preset.menuCancelKey },
-                { "menuExit", preset.menuExitKey },
+                { "menuconfirm", preset.menuConfirmKey },
+                { "menucancel", preset.menuCancelKey },
+                { "menuexit", preset.menuExitKey },
                 { "up", preset.upKey },
                 { "down", preset.downKey },
                 { "left", preset.leftKey },
-                { "right", preset.rightKey }
+                { "right", preset.rightKey },
+                { "quit", preset.quit }
             };
         }
     }
