@@ -21,8 +21,14 @@ namespace UnityUtilities.Utilities
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static T Parse<T>(string value) => (T)System.Enum.Parse(typeof(T), value);
-        
+        public static T Parse<T>(string value) {
+            if(!String.IsNullOrEmpty(value))
+            {
+                return(T)System.Enum.Parse(typeof(T), value);
+            }
+            else return default;
+        }
+
 
         /// <summary>
         /// Instantiates an object
