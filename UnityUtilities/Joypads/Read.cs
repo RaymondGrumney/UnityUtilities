@@ -13,7 +13,7 @@ namespace Joypad
     {
         [SerializeField] public string Input;
         [SerializeField] public bool State;
-        
+
         public Boolple() { }
 
         public Boolple(string key)
@@ -35,7 +35,7 @@ namespace Joypad
 
         public void Update()
         {
-            State = Joypad.Read.Buttons.Held(Input); 
+            State = Joypad.Read.Buttons.Held(Input);
         }
 
         // override object.GetHashCode
@@ -53,6 +53,7 @@ namespace Joypad
     public class Read : MonoBehaviour
     {
         public static Read Buttons;
+        public Dictionary<string,bool> LastFrameState = new Dictionary<string, bool>();
 
         // TODO: Make button states visible
         // [SerializeField] public List<Boolple> ButtonStates;
@@ -73,13 +74,6 @@ namespace Joypad
             {
                 Destroy(gameObject);
             }
-
-            // ButtonStates = new List<Boolple>();
-
-            //foreach (Twople button in Joypad.Input.Buttons.Map.Map)
-            //{
-            //    ButtonStates.Add(new Boolple(button.Key));
-            //}
         }
 
         /// <summary>
@@ -88,29 +82,61 @@ namespace Joypad
         /// <param name="action"></param>
         /// <returns></returns>
         public bool Held(string action)
-        {
-            return AxesInput(action.ToLower()) ?? UnityEngine.Input.GetKey(Easily.Parse<KeyCode>(Input.Buttons.Map[action.ToLower()]));
-            
-        }
+            => AxesInput(action.ToLower()) ?? UnityEngine.Input.GetKey(Easily.Parse<KeyCode>(Input.Buttons.Map[action.ToLower()]));
+             
 
         /// <summary>
-        /// If the button was pressed this frame. For Axes, will return if the direction is currently being pressed.
+        /// If the button was pressed this frame.
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
         public bool Pressed(string action)
         {
-            return AxesInput(action.ToLower()) ?? UnityEngine.Input.GetKeyDown(Easily.Parse<KeyCode>(Input.Buttons.Map[action.ToLower()]));
+            bool? b = AxesInput(action.ToLower());
+            if (b is null)
+            {
+                return UnityEngine.Input.GetKeyDown(Easily.Parse<KeyCode>(Input.Buttons.Map[action.ToLower()]));
+            }
+            else
+            {
+                if(!LastFrameState.ContainsKey(action))
+                {
+                    LastFrameState.Add(action, true);
+                    return true;
+                }
+                else
+                {
+                    if(!LastFrameState[action] && (bool)b)
+                    {
+                        LastFrameState[action] = true;
+                        return true;
+                    }
+                    else return false;
+                }
+            }
         }
 
         /// <summary>
-        /// if the button was released this frame. For Axes, will return if the direction is currently being pressed.
+        /// if the button was released this frame.
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
         public bool Released(string action)
         {
-            return AxesInput(action.ToLower()) ?? UnityEngine.Input.GetKeyUp(Easily.Parse<KeyCode>(Input.Buttons.Map[action.ToLower()]));
+            bool? b = AxesInput(action.ToLower());
+            if(b is null)
+            {
+                return UnityEngine.Input.GetKeyUp(Easily.Parse<KeyCode>(Input.Buttons.Map[action.ToLower()]));
+            }
+            else
+            {
+                if(LastFrameState[action] && !(bool)b)
+                {
+                    LastFrameState[action] = false;
+                    return true;
+                }
+                else return false;
+            }
         }
 
         /// <summary>
@@ -120,52 +146,40 @@ namespace Joypad
         /// <returns></returns>
         public bool? AxesInput(string action)
         {
-            // TODO: Handle Axises better. Store which is negative
-            if (Input.Buttons.Map[action].ToString().ToLower() == "vertical")
+            string a = Input.Buttons.Map[action];
+            if (!String.IsNullOrEmpty(a))
             {
-                if (action == "up")
+                string i = Input.Buttons.Map[action].ToString().ToLower();
+                switch (i)
                 {
-                    return UnityEngine.Input.GetAxis("vertical") > Joypad.Input.Buttons.Deadzone;
-                }
-                else if (action == "down")
-                {
-                    return UnityEngine.Input.GetAxis("vertical") < -Joypad.Input.Buttons.Deadzone;
-                }
-                else // default to positive
-                {
-                    return UnityEngine.Input.GetAxis("vertical") > Joypad.Input.Buttons.Deadzone;
+                    case "up": return UnityEngine.Input.GetAxis("vertical") > Joypad.Input.Buttons.Deadzone;
+                    case "down": return UnityEngine.Input.GetAxis("vertical") < -Joypad.Input.Buttons.Deadzone;
+                    case "vertical": return UnityEngine.Input.GetAxis("vertical") > Joypad.Input.Buttons.Deadzone;
+                    case "right": return UnityEngine.Input.GetAxis("horizontal") > Joypad.Input.Buttons.Deadzone;
+                    case "left": return UnityEngine.Input.GetAxis("horizontal") < -Joypad.Input.Buttons.Deadzone;
+                    case "horizontal": return UnityEngine.Input.GetAxis("horizontal") > Joypad.Input.Buttons.Deadzone;
+                    case "righttrigger":
+                    case "lefttrigger":
+                        float f = UnityEngine.Input.GetAxis(i);
+                        Debug.Log($"{i}: {f}");
+                        return UnityEngine.Input.GetAxis(i) > Joypad.Input.Buttons.Deadzone;
+                    default:
+                        // TODO: Handle Axises better. Store which is negative
+                        if (i.Contains("axis"))
+                        {
+                            switch (action)
+                            {
+                                case "left": return UnityEngine.Input.GetAxis(Input.Buttons.Map[action]) < -Joypad.Input.Buttons.Deadzone;
+                                case "down": return UnityEngine.Input.GetAxis(Input.Buttons.Map[action]) < -Joypad.Input.Buttons.Deadzone;
+                                case "up": return UnityEngine.Input.GetAxis(Input.Buttons.Map[action]) > Joypad.Input.Buttons.Deadzone;
+                                case "right": return UnityEngine.Input.GetAxis(Input.Buttons.Map[action]) > Joypad.Input.Buttons.Deadzone;
+                                default: break;
+                            }
+                        }
+                        break;
                 }
             }
-            else if (Input.Buttons.Map[action].ToString().ToLower() == "horizontal")
-            {
-                if (action == "right")
-                {
-                    return UnityEngine.Input.GetAxis("horizontal") > Joypad.Input.Buttons.Deadzone;
-                }
-                else if (action == "left")
-                {
-                    return UnityEngine.Input.GetAxis("horizontal") < -Joypad.Input.Buttons.Deadzone;
-                }
-                else
-                {
-                    return UnityEngine.Input.GetAxis("horizontal") > Joypad.Input.Buttons.Deadzone;
-                }
-            }
-            else if (Input.Buttons.Map[action].ToString().ToLower().Contains("axis"))
-            {
-                if (action == "left" || action == "down")
-                {
-                    return UnityEngine.Input.GetAxis(Input.Buttons.Map[action]) < -Joypad.Input.Buttons.Deadzone;
-                }
-                else // default to positive
-                {
-                    return UnityEngine.Input.GetAxis(Input.Buttons.Map[action]) > Joypad.Input.Buttons.Deadzone;
-                }
-            }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         public float horizontal => Held("right") ? 1f : Held("left") ? -1 : 0;
