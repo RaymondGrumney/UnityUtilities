@@ -6,8 +6,11 @@ namespace UnityUtilities.Joypads.Presets
     {
         string jumpKey { get; }
         string attackKey { get; }
+        string shield { get; }
         string interactKey { get; }
         string magicKey { get; }
+        string cyclemagicright { get; }
+        string cyclemagicleft { get; }
         string itemKey { get; }
         string menuKey { get; }
         string menuConfirmKey { get; }
@@ -19,5 +22,7 @@ namespace UnityUtilities.Joypads.Presets
         string rightKey { get; }
         string horizontalAxis { get; }
         string verticalAxis { get; }
+        string quit => KeyCode.F12.ToString();
+
     }
 }
